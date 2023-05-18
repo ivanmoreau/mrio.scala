@@ -1,6 +1,10 @@
 out/
 .bloop/
+.bsp/
+.direnv/
+.idea/
 .metals/
 .vscode/
 target/
+
 .DS_Store

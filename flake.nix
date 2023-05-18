@@ -1,18 +1,28 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    flake-parts.url = "github:hercules-ci/flake-parts";
+    typelevel-nix.url = "github:typelevel/typelevel-nix";
+    nixpkgs.follows = "typelevel-nix/nixpkgs";
+    flake-utils.follows = "typelevel-nix/flake-utils";
   };
 
-  outputs = inputs@{ self, nixpkgs, flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = nixpkgs.lib.systems.flakeExposed;
-      perSystem = { pkgs, lib, config, system, ... }: {
-        devShells.default = pkgs.mkShell {
-            buildInputs = with pkgs; [
-              mill
-            ];
+  outputs = { self, nixpkgs, flake-utils, typelevel-nix }:
+    flake-utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [ typelevel-nix.overlay ];
+        };
+      in
+      {
+        devShell = pkgs.devshell.mkShell {
+          imports = [ typelevel-nix.typelevelShell ];
+          name = "mrio-shell";
+          typelevelShell = {
+            jdk.package = pkgs.jdk11;
+            nodejs.enable = true;
           };
-      };
-    };
+        };
+      }
+    );
 }
