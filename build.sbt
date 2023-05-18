@@ -1,8 +1,9 @@
-ThisBuild / tlBaseVersion := "0.0" // your current series x.y
+ThisBuild / tlBaseVersion := "0.0"
 
-ThisBuild / licenses := Seq(License.Apache2)
+ThisBuild / licenses := Seq(
+  "MPL-2.0" -> url("https://www.mozilla.org/media/MPL/2.0/index.f75d2927d3c1.txt")
+)
 ThisBuild / developers := List(
-  // your GitHub handle and name
   tlGitHubDev("ivanmoreau", "Iván Molina Rebolledo")
 )
 
