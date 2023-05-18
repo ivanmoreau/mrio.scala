@@ -15,15 +15,32 @@ val Scala2_13Version = "2.13.10"
 ThisBuild / crossScalaVersions := Seq(Scala3Version, Scala2_13Version)
 ThisBuild / scalaVersion := Scala3Version
 
-lazy val root = tlCrossRootProject.aggregate(eio)
+lazy val root = tlCrossRootProject.aggregate(eio, mrio)
 
 lazy val eio = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .in(file("eio"))
   .settings(
     name := "eio",
+    scalacOptions := Seq(
+      "-Ykind-projector:underscores"
+    ),
     libraryDependencies ++= Seq(
       "org.typelevel" %%% "cats-effect" % "3.5.0",
       "org.typelevel" %%% "cats-mtl" % "1.3.0"
+    )
+  )
+
+lazy val mrio = crossProject(JVMPlatform, JSPlatform, NativePlatform)
+  .crossType(CrossType.Pure)
+  .in(file("mrio"))
+  .dependsOn(eio)
+  .settings(
+    name := "mrio",
+    scalacOptions := Seq(
+      "-Ykind-projector:underscores"
+    ),
+    libraryDependencies ++= Seq(
+      "org.typelevel" %%% "cats-effect" % "3.5.0"
     )
   )
